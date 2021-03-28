@@ -10,7 +10,7 @@ pom.xml:
 
 ```xml
 <dependency>
-    <groupId>org.tomlj.mapper</groupId>
+    <groupId>com.github.toml-java</groupId>
     <artifactId>tomlj-mapper</artifactId>
     <version>0.1.0</version>
 </dependency>
@@ -24,6 +24,8 @@ array1 = [1, 2, 3, 4]
 ```
 
 ```java
+import com.github.tomlj.mapper.TomlObjectMapper;
+
 class Test {
     @Test
     public parseSimple() {
