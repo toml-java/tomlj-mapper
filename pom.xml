@@ -5,7 +5,27 @@
     <groupId>com.github.toml-java</groupId>
     <artifactId>tomlj-mapper</artifactId>
     <version>0.1.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
+    <name>tomlj-mapper</name>
+    <description>An object mapper for TOML format</description>
+    <url>https://github.com/toml-java/tomlj-mapper</url>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+        <license>
+            <name>UNLICENSE</name>
+            <url>http://unlicense.org/</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Alexander Korolev</name>
+            <email>alexander.korolev.germany@gmail.com</email>
+        </developer>
+    </developers>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
