@@ -12,7 +12,7 @@ pom.xml:
 <dependency>
     <groupId>com.github.toml-java</groupId>
     <artifactId>tomlj-mapper</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
