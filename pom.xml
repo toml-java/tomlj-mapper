@@ -4,7 +4,7 @@
 
     <groupId>com.github.toml-java</groupId>
     <artifactId>tomlj-mapper</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>tomlj-mapper</name>
@@ -41,7 +41,7 @@
         <connection>scm:git:git://github.com/toml-java/tomlj-mapper.git</connection>
         <developerConnection>scm:git:git@github.com:toml-java/tomlj-mapper.git</developerConnection>
         <url>https://github.com/toml-java/tomlj-mapper</url>
-        <tag>v0.1.1</tag>
+        <tag>HEAD</tag>
     </scm>
     <dependencies>
         <dependency>
