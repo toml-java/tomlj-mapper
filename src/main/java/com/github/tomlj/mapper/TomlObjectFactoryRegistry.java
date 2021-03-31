@@ -9,6 +9,7 @@ import com.github.tomlj.mapper.accessor.ListTomlObjectAccessor;
 import com.github.tomlj.mapper.accessor.MapTomlObjectAccessor;
 import com.github.tomlj.mapper.factory.AccessorBasedTomlFactory;
 import com.github.tomlj.mapper.factory.ConstructorBasedTomlFactory;
+import com.github.tomlj.mapper.factory.DefaultInstanceCreatorFactory;
 import com.github.tomlj.mapper.factory.DelegateTomlFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
@@ -40,16 +41,19 @@ public final class TomlObjectFactoryRegistry {
 
   private final Map<Type, TomlObjectFactory<?>> factories;
   private final Map<AccessorType, TomlObjectAccessor<?>> accessors;
+  private final TomlObjectInstanceCreatorFactory instanceCreatorFactory;
 
   public TomlObjectFactoryRegistry(
       Map<Type, TomlObjectFactory<?>> factories,
-      Map<AccessorType, TomlObjectAccessor<?>> accessors) {
+      Map<AccessorType, TomlObjectAccessor<?>> accessors,
+      TomlObjectInstanceCreatorFactory instanceCreatorFactory) {
     this.factories = factories;
     this.accessors = accessors;
+    this.instanceCreatorFactory = instanceCreatorFactory;
   }
 
   public TomlObjectFactoryRegistry() {
-    this(new HashMap<>(), new HashMap<>());
+    this(new HashMap<>(), new HashMap<>(), new DefaultInstanceCreatorFactory());
   }
 
   public <T> TomlObjectFactory<T> factory(Class<T> aClass) {
@@ -85,17 +89,18 @@ public final class TomlObjectFactoryRegistry {
     return new ConstructorBasedTomlFactory<>(this, constructors[0]);
   }
 
+  @SuppressWarnings("unckecked")
   private <T> TomlObjectAccessor<?> createAccessorForClass(Class<T> aClass, Type type) {
     if (DEFAULT_ACCESSORS.contains(aClass)) {
       return new DefaultTomlObjectAccessor<>();
     } else if (type instanceof ParameterizedType) {
       ParameterizedType parameterizedType = (ParameterizedType) type;
       Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-      if (aClass.isAssignableFrom(List.class)) {
+      if (List.class.isAssignableFrom(aClass)) {
         TomlObjectAccessor<?> itemsAccessor = tomlObjectAccessorFrom(actualTypeArguments[0]);
-        return new ListTomlObjectAccessor<>(itemsAccessor);
-      } else if (aClass.isAssignableFrom(Map.class)) {
-        return mapTomlObjectAccessor(actualTypeArguments);
+        return new ListTomlObjectAccessor(instanceCreatorFactory.forClass(aClass), itemsAccessor);
+      } else if (Map.class.isAssignableFrom(aClass)) {
+        return mapTomlObjectAccessor(aClass, actualTypeArguments);
       } else {
         throw new TomlObjectMapperException("Unsupported parameterized type: " + aClass.getName());
       }
@@ -107,10 +112,13 @@ public final class TomlObjectFactoryRegistry {
     return new GenericTomlObjectAccessor();
   }
 
-  private MapTomlObjectAccessor<?, ?> mapTomlObjectAccessor(Type[] actualTypeArguments) {
+  @SuppressWarnings("unckecked")
+  private MapTomlObjectAccessor<?, ?> mapTomlObjectAccessor(
+      Class<?> aClass, Type[] actualTypeArguments) {
     TomlObjectAccessor<?> keyAccessor = tomlObjectAccessorFrom(actualTypeArguments[0]);
     TomlObjectAccessor<?> valueAccessor = tomlObjectAccessorFrom(actualTypeArguments[1]);
-    return new MapTomlObjectAccessor<>(keyAccessor, valueAccessor);
+    return new MapTomlObjectAccessor(
+        instanceCreatorFactory.forClass(aClass), keyAccessor, valueAccessor);
   }
 
   private TomlObjectAccessor<?> tomlObjectAccessorFrom(Type type) {
@@ -142,11 +150,17 @@ public final class TomlObjectFactoryRegistry {
   private TomlObjectFactory<?> createFactoryForParameterizedType(Type type) {
     ParameterizedType parameterizedType = (ParameterizedType) type;
     Type rawType = parameterizedType.getRawType();
+    Class<?> instanceClass = null;
     if (Map.class.equals(rawType)) {
-      return new AccessorBasedTomlFactory<>(
-          mapTomlObjectAccessor(parameterizedType.getActualTypeArguments()));
+      instanceClass = Map.class;
+    } else if (rawType instanceof Class<?> && Map.class.isAssignableFrom((Class<?>) rawType)) {
+      instanceClass = (Class<?>) rawType;
     }
-    throw new TomlObjectMapperException(
-        "Parameterized type " + type.getTypeName() + " is not supported.");
+    if (instanceClass == null) {
+      throw new TomlObjectMapperException(
+          "Parameterized type " + type.getTypeName() + " is not supported.");
+    }
+    return new AccessorBasedTomlFactory<>(
+        mapTomlObjectAccessor(instanceClass, parameterizedType.getActualTypeArguments()));
   }
 }

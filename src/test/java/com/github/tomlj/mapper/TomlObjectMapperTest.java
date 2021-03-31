@@ -2,6 +2,7 @@ package com.github.tomlj.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.github.tomlj.mapper.model.CustomTypes;
 import com.github.tomlj.mapper.model.Database;
 import com.github.tomlj.mapper.model.Owner;
 import com.github.tomlj.mapper.model.Products;
@@ -16,8 +17,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import org.junit.jupiter.api.Test;
 
 class TomlObjectMapperTest {
@@ -101,6 +104,25 @@ class TomlObjectMapperTest {
   }
 
   @Test
+  void treeMap() throws IOException {
+    // Given
+    try (InputStream inputStream = getClass().getResourceAsStream("/map.toml")) {
+      TomlObjectMapper<TreeMap<String, String>> mapper =
+          TomlObjectMapper.forType(new TomlTypeReference<TreeMap<String, String>>() {});
+      Map<String, String> expected = new TreeMap<>();
+      expected.put("key1", "value 1");
+      expected.put("key2", "value 2");
+      expected.put("key3", "value 3");
+
+      // When
+      TreeMap<String, String> map = mapper.parse(inputStream);
+
+      // Then
+      assertEquals(expected, map);
+    }
+  }
+
+  @Test
   void arrayOfTables() throws IOException {
     // Given
     try (InputStream simpleTomlInputStream =
@@ -120,6 +142,24 @@ class TomlObjectMapperTest {
                   new Products(null, null, null),
                   new Products("Nail", 284758393L, "gray"))),
           productsMap);
+    }
+  }
+
+  @Test
+  void customTypes() throws IOException {
+    // Given
+    try (InputStream inputStream = getClass().getResourceAsStream("/custom_types.toml")) {
+      TomlObjectMapper<CustomTypes> mapper = TomlObjectMapper.forClass(CustomTypes.class);
+
+      // When
+      CustomTypes simple = mapper.parse(inputStream);
+
+      // Then
+      TreeMap<String, String> treeMap = new TreeMap<>();
+      treeMap.put("a", "b");
+      treeMap.put("b", "c");
+      assertEquals(
+          new CustomTypes(new LinkedList<>(Arrays.asList("a", "b", "c")), treeMap), simple);
     }
   }
 }

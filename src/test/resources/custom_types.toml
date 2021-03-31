@@ -1,0 +1,5 @@
+linked_list = ['a', 'b', 'c']
+
+[tree_map]
+a = 'b'
+b = 'c'
