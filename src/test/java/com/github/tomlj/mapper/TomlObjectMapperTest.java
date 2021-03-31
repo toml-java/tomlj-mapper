@@ -1,11 +1,13 @@
 package com.github.tomlj.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.github.tomlj.mapper.model.CustomTypes;
 import com.github.tomlj.mapper.model.Database;
 import com.github.tomlj.mapper.model.Owner;
 import com.github.tomlj.mapper.model.Products;
+import com.github.tomlj.mapper.model.RequiredField;
 import com.github.tomlj.mapper.model.Server;
 import com.github.tomlj.mapper.model.Simple;
 import com.github.tomlj.mapper.model.SimpleRename;
@@ -36,6 +38,21 @@ class TomlObjectMapperTest {
 
       // Then
       assertEquals(new Simple("value1", Arrays.asList(1L, 2L, 3L, 4L)), simple);
+    }
+  }
+
+  @Test
+  void required() throws IOException {
+    // Given
+    try (InputStream inputStream = getClass().getResourceAsStream("/simple.toml")) {
+      TomlObjectMapper<RequiredField> mapper = TomlObjectMapper.forClass(RequiredField.class);
+
+      // When
+      assertThrows(
+          TomlObjectMapperRequiredPropertyException.class,
+          () -> {
+            RequiredField simple = mapper.parse(inputStream);
+          });
     }
   }
 

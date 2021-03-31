@@ -4,6 +4,7 @@ import com.github.tomlj.mapper.TomlObjectAccessor;
 import com.github.tomlj.mapper.TomlObjectFactory;
 import com.github.tomlj.mapper.TomlObjectFactoryRegistry;
 import com.github.tomlj.mapper.TomlObjectMapperException;
+import com.github.tomlj.mapper.TomlObjectMapperRequiredPropertyException;
 import com.github.tomlj.mapper.TomlObjectProperty;
 import com.github.tomlj.mapper.TomlProperty;
 import java.lang.reflect.AnnotatedType;
@@ -88,8 +89,7 @@ public final class ConstructorBasedTomlFactory<T> implements TomlObjectFactory<T
         .findFirst()
         .ifPresent(
             property -> {
-              throw new TomlObjectMapperException(
-                  "Required property is missing: " + property.getName());
+              throw new TomlObjectMapperRequiredPropertyException(property.getName());
             });
 
     try {

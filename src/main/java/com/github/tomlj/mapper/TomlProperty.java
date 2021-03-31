@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE_PARAMETER, ElementType.PARAMETER})
 public @interface TomlProperty {
-  String value();
+  String value() default "";
 
   boolean required() default false;
 }
