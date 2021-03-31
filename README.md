@@ -1,5 +1,7 @@
 # An object mapper for TOML format
 
+![Maven Central](https://img.shields.io/maven-central/v/com.github.toml-java/tomlj-mapper)
+
 ## Legal
 
 Dual-licensed under `MIT` or the [UNLICENSE](http://unlicense.org/).
