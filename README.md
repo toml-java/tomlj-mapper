@@ -12,7 +12,7 @@ pom.xml:
 <dependency>
     <groupId>com.github.toml-java</groupId>
     <artifactId>tomlj-mapper</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -22,6 +22,8 @@ simple.toml:
 key1 = 'value1'
 array1 = [1, 2, 3, 4]
 ```
+
+Test.java:
 
 ```java
 import com.github.tomlj.mapper.TomlObjectMapper;
@@ -40,7 +42,11 @@ class Test {
         }
     }
 }
+```
 
+Simple.java:
+
+```java
 public class Simple {
     private final String key1;
     private final List<Long> array1;
