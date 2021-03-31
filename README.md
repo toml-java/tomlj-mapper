@@ -1,6 +1,6 @@
 # An object mapper for TOML format
 
-![Maven Central](https://img.shields.io/maven-central/v/com.github.toml-java/tomlj-mapper)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.toml-java/tomlj-mapper)](https://search.maven.org/artifact/com.github.toml-java/tomlj-mapper)
 
 ## Legal
 
