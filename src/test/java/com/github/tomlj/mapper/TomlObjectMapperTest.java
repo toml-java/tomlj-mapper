@@ -3,8 +3,10 @@ package com.github.tomlj.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.github.tomlj.mapper.model.Color;
 import com.github.tomlj.mapper.model.CustomTypes;
 import com.github.tomlj.mapper.model.Database;
+import com.github.tomlj.mapper.model.EnumColor;
 import com.github.tomlj.mapper.model.Owner;
 import com.github.tomlj.mapper.model.Products;
 import com.github.tomlj.mapper.model.RequiredField;
@@ -177,6 +179,20 @@ class TomlObjectMapperTest {
       treeMap.put("b", "c");
       assertEquals(
           new CustomTypes(new LinkedList<>(Arrays.asList("a", "b", "c")), treeMap), simple);
+    }
+  }
+
+  @Test
+  void enum1() throws IOException {
+    // Given
+    try (InputStream inputStream = getClass().getResourceAsStream("/enum-1.toml")) {
+      TomlObjectMapper<EnumColor> mapper = TomlObjectMapper.forClass(EnumColor.class);
+
+      // When
+      EnumColor enumColor = mapper.parse(inputStream);
+
+      // Then
+      assertEquals(new EnumColor(Color.RED), enumColor);
     }
   }
 }

@@ -104,6 +104,8 @@ public final class TomlObjectFactoryRegistry {
       } else {
         throw new TomlObjectMapperException("Unsupported parameterized type: " + aClass.getName());
       }
+    } else if (Enum.class.isAssignableFrom(aClass)) {
+      throw new UnsupportedOperationException("Enums are not supported");
     } else if (!aClass.equals(Object.class)) {
       TomlObjectFactory<T> factory = factory(aClass);
       return new FactoryTomlObjectAccessor<>(factory);
