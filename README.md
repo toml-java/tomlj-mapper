@@ -14,7 +14,7 @@ pom.xml:
 <dependency>
     <groupId>com.github.toml-java</groupId>
     <artifactId>tomlj-mapper</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
