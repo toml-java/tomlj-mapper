@@ -3,8 +3,12 @@ package com.github.tomlj.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.github.tomlj.mapper.model.Car;
+import com.github.tomlj.mapper.model.Color;
 import com.github.tomlj.mapper.model.CustomTypes;
 import com.github.tomlj.mapper.model.Database;
+import com.github.tomlj.mapper.model.EnumCar;
+import com.github.tomlj.mapper.model.EnumColor;
 import com.github.tomlj.mapper.model.Owner;
 import com.github.tomlj.mapper.model.Products;
 import com.github.tomlj.mapper.model.RequiredField;
@@ -177,6 +181,34 @@ class TomlObjectMapperTest {
       treeMap.put("b", "c");
       assertEquals(
           new CustomTypes(new LinkedList<>(Arrays.asList("a", "b", "c")), treeMap), simple);
+    }
+  }
+
+  @Test
+  void enumColor() throws IOException {
+    // Given
+    try (InputStream inputStream = getClass().getResourceAsStream("/enum-color.toml")) {
+      TomlObjectMapper<EnumColor> mapper = TomlObjectMapper.forClass(EnumColor.class);
+
+      // When
+      EnumColor enumColor = mapper.parse(inputStream);
+
+      // Then
+      assertEquals(new EnumColor(Color.RED), enumColor);
+    }
+  }
+
+  @Test
+  void enumCar() throws IOException {
+    // Given
+    try (InputStream inputStream = getClass().getResourceAsStream("/enum-car.toml")) {
+      TomlObjectMapper<EnumCar> mapper = TomlObjectMapper.forClass(EnumCar.class);
+
+      // When
+      EnumCar enumCar = mapper.parse(inputStream);
+
+      // Then
+      assertEquals(new EnumCar(Car.BMW, Car.AUDI, Car.TESLA), enumCar);
     }
   }
 }

@@ -3,6 +3,7 @@ package com.github.tomlj.mapper;
 import com.github.tomlj.mapper.accessor.AccessorType;
 import com.github.tomlj.mapper.accessor.DefaultTomlObjectAccessor;
 import com.github.tomlj.mapper.accessor.DelegateTomlObjectAccessor;
+import com.github.tomlj.mapper.accessor.EnumTomlObjectAccessor;
 import com.github.tomlj.mapper.accessor.FactoryTomlObjectAccessor;
 import com.github.tomlj.mapper.accessor.GenericTomlObjectAccessor;
 import com.github.tomlj.mapper.accessor.ListTomlObjectAccessor;
@@ -104,6 +105,8 @@ public final class TomlObjectFactoryRegistry {
       } else {
         throw new TomlObjectMapperException("Unsupported parameterized type: " + aClass.getName());
       }
+    } else if (Enum.class.isAssignableFrom(aClass)) {
+      return new EnumTomlObjectAccessor<>(aClass.getEnumConstants());
     } else if (!aClass.equals(Object.class)) {
       TomlObjectFactory<T> factory = factory(aClass);
       return new FactoryTomlObjectAccessor<>(factory);

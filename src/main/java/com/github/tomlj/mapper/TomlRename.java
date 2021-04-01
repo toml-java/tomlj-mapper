@@ -7,11 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({
-  ElementType.PARAMETER,
-  ElementType.TYPE_PARAMETER,
+  ElementType.FIELD,
 })
-public @interface TomlProperty {
-  String value() default "";
-
-  boolean required() default false;
+public @interface TomlRename {
+  String value();
 }
