@@ -8,6 +8,7 @@ import com.github.tomlj.mapper.accessor.FactoryTomlObjectAccessor;
 import com.github.tomlj.mapper.accessor.GenericTomlObjectAccessor;
 import com.github.tomlj.mapper.accessor.ListTomlObjectAccessor;
 import com.github.tomlj.mapper.accessor.MapTomlObjectAccessor;
+import com.github.tomlj.mapper.accessor.SetTomlObjectAccessor;
 import com.github.tomlj.mapper.factory.AccessorBasedTomlFactory;
 import com.github.tomlj.mapper.factory.ConstructorBasedTomlFactory;
 import com.github.tomlj.mapper.factory.DefaultInstanceCreatorFactory;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public final class TomlObjectFactoryRegistry {
@@ -102,6 +104,9 @@ public final class TomlObjectFactoryRegistry {
         return new ListTomlObjectAccessor(instanceCreatorFactory.forClass(aClass), itemsAccessor);
       } else if (Map.class.isAssignableFrom(aClass)) {
         return mapTomlObjectAccessor(aClass, actualTypeArguments);
+      } else if (Set.class.isAssignableFrom(aClass)) {
+        TomlObjectAccessor<?> itemsAccessor = tomlObjectAccessorFrom(actualTypeArguments[0]);
+        return new SetTomlObjectAccessor(instanceCreatorFactory.forClass(aClass), itemsAccessor);
       } else {
         throw new TomlObjectMapperException("Unsupported parameterized type: " + aClass.getName());
       }
@@ -154,9 +159,7 @@ public final class TomlObjectFactoryRegistry {
     ParameterizedType parameterizedType = (ParameterizedType) type;
     Type rawType = parameterizedType.getRawType();
     Class<?> instanceClass = null;
-    if (Map.class.equals(rawType)) {
-      instanceClass = Map.class;
-    } else if (rawType instanceof Class<?> && Map.class.isAssignableFrom((Class<?>) rawType)) {
+    if (Map.class.isAssignableFrom((Class<?>) rawType)) {
       instanceClass = (Class<?>) rawType;
     }
     if (instanceClass == null) {

@@ -7,8 +7,16 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.NavigableSet;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class DefaultInstanceCreatorFactory implements TomlObjectInstanceCreatorFactory {
 
@@ -20,6 +28,15 @@ public class DefaultInstanceCreatorFactory implements TomlObjectInstanceCreatorF
     }
     if (Map.class.equals(aClass)) {
       return () -> (T) new HashMap<>();
+    }
+    if (Set.class.equals(aClass)) {
+      return () -> (T) new HashSet<>();
+    }
+    if (SortedMap.class.equals(aClass) || NavigableMap.class.equals(aClass)) {
+      return () -> (T) new TreeMap<>();
+    }
+    if (SortedSet.class.equals(aClass) || NavigableSet.class.equals(aClass)) {
+      return () -> (T) new TreeSet<>();
     }
     if (aClass.isInterface()) {
       throw new TomlObjectMapperException("Unsupported interface type: " + aClass.getName());
