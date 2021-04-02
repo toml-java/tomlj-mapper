@@ -4,7 +4,6 @@ import com.github.tomlj.mapper.TomlObjectAccessor;
 import com.github.tomlj.mapper.TomlObjectFactoryRegistry;
 import com.github.tomlj.mapper.TomlObjectMapperException;
 import com.github.tomlj.mapper.TomlRename;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
