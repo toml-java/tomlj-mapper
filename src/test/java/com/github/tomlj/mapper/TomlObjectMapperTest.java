@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.junit.jupiter.api.Test;
+import org.tomlj.Toml;
+import org.tomlj.TomlParseResult;
 
 class TomlObjectMapperTest {
 
@@ -209,6 +211,21 @@ class TomlObjectMapperTest {
 
       // Then
       assertEquals(new EnumCar(Car.BMW, Car.AUDI, Car.TESLA), enumCar);
+    }
+  }
+
+  @Test
+  void transformParseResult() throws IOException {
+    // Given
+    try (InputStream inputStream = getClass().getResourceAsStream("/simple.toml")) {
+      TomlObjectMapper<Simple> mapper = TomlObjectMapper.forClass(Simple.class);
+      TomlParseResult parseResult = Toml.parse(inputStream);
+
+      // When
+      Simple simple = mapper.transformParseResult(parseResult);
+
+      // Then
+      assertEquals(new Simple("value1", Arrays.asList(1L, 2L, 3L, 4L)), simple);
     }
   }
 }

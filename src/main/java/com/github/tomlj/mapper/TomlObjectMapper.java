@@ -43,6 +43,10 @@ public final class TomlObjectMapper<T> {
       throw new TomlObjectMapperParseException(result);
     }
 
-    return factory.createFromTable(registry, result);
+    return transformParseResult(result);
+  }
+
+  public T transformParseResult(TomlParseResult parseResult) {
+    return factory.createFromTable(registry, parseResult);
   }
 }
