@@ -1,0 +1,3 @@
+data = ['a', 'bb', 'ccc', 'bb']
+sorted = ['ccc1', 'bb1', 'a1']
+navigable = ['a2', 'ccc2', 'b2']

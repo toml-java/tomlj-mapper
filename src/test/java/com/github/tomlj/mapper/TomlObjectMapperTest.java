@@ -13,6 +13,7 @@ import com.github.tomlj.mapper.model.Owner;
 import com.github.tomlj.mapper.model.Products;
 import com.github.tomlj.mapper.model.RequiredField;
 import com.github.tomlj.mapper.model.Server;
+import com.github.tomlj.mapper.model.SetKeys;
 import com.github.tomlj.mapper.model.Simple;
 import com.github.tomlj.mapper.model.SimpleRename;
 import com.github.tomlj.mapper.model.TomlExample;
@@ -22,11 +23,17 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
@@ -146,6 +153,25 @@ class TomlObjectMapperTest {
   }
 
   @Test
+  void sortedMap() throws IOException {
+    // Given
+    try (InputStream inputStream = getClass().getResourceAsStream("/map.toml")) {
+      TomlObjectMapper<SortedMap<String, String>> mapper =
+          TomlObjectMapper.forType(new TomlTypeReference<SortedMap<String, String>>() {});
+      Map<String, String> expected = new TreeMap<>();
+      expected.put("key1", "value 1");
+      expected.put("key2", "value 2");
+      expected.put("key3", "value 3");
+
+      // When
+      SortedMap<String, String> map = mapper.parse(inputStream);
+
+      // Then
+      assertEquals(expected, map);
+    }
+  }
+
+  @Test
   void arrayOfTables() throws IOException {
     // Given
     try (InputStream simpleTomlInputStream =
@@ -226,6 +252,33 @@ class TomlObjectMapperTest {
 
       // Then
       assertEquals(new Simple("value1", Arrays.asList(1L, 2L, 3L, 4L)), simple);
+    }
+  }
+
+  @Test
+  void set() throws IOException {
+    // Given
+    try (InputStream inputStream = getClass().getResourceAsStream("/set.toml")) {
+      TomlObjectMapper<SetKeys> mapper = TomlObjectMapper.forClass(SetKeys.class);
+      Set<String> data = new HashSet<>();
+      data.add("a");
+      data.add("bb");
+      data.add("ccc");
+      SortedSet<String> sorted = new TreeSet<>();
+      sorted.add("a1");
+      sorted.add("bb1");
+      sorted.add("ccc1");
+      NavigableSet<String> navigable = new TreeSet<>();
+      navigable.add("a2");
+      navigable.add("b2");
+      navigable.add("ccc2");
+      SetKeys expected = new SetKeys(data, sorted, navigable);
+
+      // When
+      SetKeys setKeys = mapper.parse(inputStream);
+
+      // Then
+      assertEquals(expected, setKeys);
     }
   }
 }
